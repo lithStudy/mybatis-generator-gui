@@ -69,11 +69,15 @@ public class MybatisGeneratorBridge {
         TableConfiguration tableConfig = new TableConfiguration(context);
         tableConfig.setTableName(generatorConfig.getTableName());
         tableConfig.setDomainObjectName(generatorConfig.getDomainObjectName());
+
+        tableConfig.setUpdateByExampleStatementEnabled(false);
+        tableConfig.setCountByExampleStatementEnabled(false);
+        tableConfig.setDeleteByExampleStatementEnabled(false);
+        tableConfig.setSelectByExampleStatementEnabled(true);
+        tableConfig.setSelectByPrimaryKeyStatementEnabled(true);
         if(!generatorConfig.isUseExample()) {
-            tableConfig.setUpdateByExampleStatementEnabled(false);
-            tableConfig.setCountByExampleStatementEnabled(false);
-            tableConfig.setDeleteByExampleStatementEnabled(false);
-            tableConfig.setSelectByExampleStatementEnabled(false);
+
+
         }
 
 		context.addProperty("autoDelimitKeywords", "true");
@@ -191,6 +195,12 @@ public class MybatisGeneratorBridge {
         serializablePluginConfiguration.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
         context.addPluginConfiguration(serializablePluginConfiguration);
 
+        //自定义插件
+        PluginConfiguration extendPluginConfiguration = new PluginConfiguration();
+        extendPluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.WeDoctorExtendsPlugin");
+        extendPluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.WeDoctorExtendsPlugin");
+        context.addPluginConfiguration(extendPluginConfiguration);
+
         // Lombok 插件
         if (generatorConfig.isUseLombokPlugin()) {
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
@@ -216,6 +226,7 @@ public class MybatisGeneratorBridge {
                 PluginConfiguration pluginConfiguration = new PluginConfiguration();
                 pluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.MySQLLimitPlugin");
                 pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.MySQLLimitPlugin");
+
                 context.addPluginConfiguration(pluginConfiguration);
             }
         }

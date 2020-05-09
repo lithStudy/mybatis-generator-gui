@@ -23,6 +23,8 @@ import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.internal.util.StringUtility;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
 
@@ -110,7 +112,9 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
     public void addModelClassComment(TopLevelClass topLevelClass,
                                 IntrospectedTable introspectedTable) {
         topLevelClass.addJavaDocLine("/**");
-        topLevelClass.addJavaDocLine(" * @author ");
+        topLevelClass.addJavaDocLine(" * @author lith");
+        SimpleDateFormat sdf = new SimpleDateFormat("* yyyy-MM-dd'T'HH:mm:ss");
+        topLevelClass.addJavaDocLine(" * @since  " + sdf.format(new Date()));
         topLevelClass.addJavaDocLine(" * " + introspectedTable.getRemarks());
         topLevelClass.addJavaDocLine(" */");
         if(isAnnotations) {

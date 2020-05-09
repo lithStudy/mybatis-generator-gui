@@ -1,27 +1,40 @@
 package com.zzg.mybatis.generator.bridge;
 
-import com.jcraft.jsch.Session;
-import com.zzg.mybatis.generator.controller.PictureProcessStateController;
 import com.zzg.mybatis.generator.model.DatabaseConfig;
 import com.zzg.mybatis.generator.model.DbType;
 import com.zzg.mybatis.generator.model.GeneratorConfig;
 import com.zzg.mybatis.generator.plugins.DbRemarksCommentGenerator;
 import com.zzg.mybatis.generator.util.ConfigHelper;
 import com.zzg.mybatis.generator.util.DbUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.mybatis.generator.api.MyBatisGenerator;
-import org.mybatis.generator.api.ProgressCallback;
-import org.mybatis.generator.api.ShellCallback;
-import org.mybatis.generator.config.*;
-import org.mybatis.generator.internal.DefaultShellCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.api.ProgressCallback;
+import org.mybatis.generator.api.ShellCallback;
+import org.mybatis.generator.config.ColumnOverride;
+import org.mybatis.generator.config.CommentGeneratorConfiguration;
+import org.mybatis.generator.config.Configuration;
+import org.mybatis.generator.config.Context;
+import org.mybatis.generator.config.GeneratedKey;
+import org.mybatis.generator.config.IgnoredColumn;
+import org.mybatis.generator.config.JDBCConnectionConfiguration;
+import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
+import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
+import org.mybatis.generator.config.JavaTypeResolverConfiguration;
+import org.mybatis.generator.config.ModelType;
+import org.mybatis.generator.config.PluginConfiguration;
+import org.mybatis.generator.config.PropertyRegistry;
+import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
+import org.mybatis.generator.config.TableConfiguration;
+import org.mybatis.generator.internal.DefaultShellCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The bridge between GUI and the mybatis generator. All the operation to  mybatis generator should proceed through this
@@ -70,15 +83,17 @@ public class MybatisGeneratorBridge {
         tableConfig.setTableName(generatorConfig.getTableName());
         tableConfig.setDomainObjectName(generatorConfig.getDomainObjectName());
 
-        tableConfig.setUpdateByExampleStatementEnabled(false);
-        tableConfig.setCountByExampleStatementEnabled(false);
-        tableConfig.setDeleteByExampleStatementEnabled(false);
-        tableConfig.setSelectByExampleStatementEnabled(true);
-        tableConfig.setSelectByPrimaryKeyStatementEnabled(true);
         if(!generatorConfig.isUseExample()) {
-
-
+            tableConfig.setUpdateByExampleStatementEnabled(false);
+            tableConfig.setCountByExampleStatementEnabled(false);
+            tableConfig.setDeleteByExampleStatementEnabled(false);
+            tableConfig.setSelectByExampleStatementEnabled(false);
         }
+        tableConfig.setInsertStatementEnabled(false);
+        tableConfig.setUpdateByPrimaryKeyStatementEnabled(false);
+        tableConfig.setSelectByPrimaryKeyStatementEnabled(false);
+        //全部关闭会有问题，Context.introspectTables方法中会判断是否存在任意的预定义的方法，如果没有，将不会生成文件
+//        tableConfig.setDeleteByPrimaryKeyStatementEnabled(false);
 
 		context.addProperty("autoDelimitKeywords", "true");
 		if (DbType.MySQL.name().equals(dbType) || DbType.MySQL_8.name().equals(dbType)) {

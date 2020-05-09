@@ -234,8 +234,46 @@ public class CommonDAOInterfacePlugin extends PluginAdapter {
     @Override
     public boolean clientSelectByPrimaryKeyMethodGenerated(Method method,
                                                            Interface interfaze, IntrospectedTable introspectedTable) {
-    	interceptPrimaryKeyParam(method);
-        method.setReturnType(new FullyQualifiedJavaType("Model"));
+        /**
+         * 添加自定义公共方法
+         */
+        if (method.getName().equals("list")) {
+            method.getParameters().clear();
+
+            Parameter parameter1 = new Parameter(new FullyQualifiedJavaType("Model"), "po");
+            parameter1.addAnnotation("@Param(\"po\")");
+            method.addParameter(parameter1);
+            methods.add(method);
+
+            method.setReturnType(new FullyQualifiedJavaType("List<Model>"));
+        } else if (method.getName().equals("pageList")) {
+            method.getParameters().clear();
+
+            Parameter parameter1 = new Parameter(new FullyQualifiedJavaType("Model"), "po");
+            parameter1.addAnnotation("@Param(\"po\")");
+            method.addParameter(parameter1);
+
+            Parameter parameter2 = new Parameter(new FullyQualifiedJavaType("Model"), "po");
+            parameter2.addAnnotation("@Param(\"pageQuery\")");
+            method.addParameter(parameter2);
+            methods.add(method);
+
+            method.setReturnType(new FullyQualifiedJavaType("List<Model>"));
+        } else if (method.getName().equals("count")) {
+            method.getParameters().clear();
+
+            Parameter parameter1 = new Parameter(new FullyQualifiedJavaType("Model"), "po");
+            parameter1.addAnnotation("@Param(\"po\")");
+            method.addParameter(parameter1);
+
+            methods.add(method);
+
+            method.setReturnType(new FullyQualifiedJavaType("long"));
+        } else {
+            interceptPrimaryKeyParam(method);
+            method.setReturnType(new FullyQualifiedJavaType("Model"));
+        }
+
         return false;
     }
 

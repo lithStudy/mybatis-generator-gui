@@ -45,17 +45,57 @@ public class MainUIController extends BaseFXController {
 
     private static final Logger _LOG = LoggerFactory.getLogger(MainUIController.class);
     private static final String FOLDER_NO_EXIST = "部分目录不存在，是否创建";
+
+
+
+    @FXML
+    private TextField poPackage;
+    @FXML
+    private TextField poTargetProject;
+
+    @FXML
+    private TextField boPackage;
+    @FXML
+    private TextField boTargetProject;
+
+    @FXML
+    private TextField daoPackage;
+    @FXML
+    private TextField daoTargetProject;
+
+    @FXML
+    private TextField mapperPackage;
+    @FXML
+    private TextField mapperTargetProject;
+
+    @FXML
+    private TextField managerPackage;
+    @FXML
+    private TextField managerTargetProject;
+
+    @FXML
+    private TextField managerImplPackage;
+    @FXML
+    private TextField managerImplTargetProject;
+
+    @FXML
+    private TextField transPackage;
+    @FXML
+    private TextField transTargetProject;
+
+
+
     // tool bar buttons
     @FXML
     private Label connectionLabel;
     @FXML
     private Label configsLabel;
-    @FXML
-    private TextField modelTargetPackage;
-    @FXML
-    private TextField mapperTargetPackage;
-    @FXML
-    private TextField daoTargetPackage;
+//    @FXML
+//    private TextField modelTargetPackage;
+//    @FXML
+//    private TextField mapperTargetPackage;
+//    @FXML
+//    private TextField daoTargetPackage;
     @FXML
     private TextField tableNameField;
     @FXML
@@ -63,41 +103,35 @@ public class MainUIController extends BaseFXController {
     @FXML
     private TextField generateKeysField;	//主键ID
     @FXML
-    private TextField modelTargetProject;
-    @FXML
-    private TextField mappingTargetProject;
-    @FXML
-    private TextField daoTargetProject;
-    @FXML
     private TextField mapperName;
     @FXML
     private TextField projectFolderField;
-    @FXML
-    private CheckBox offsetLimitCheckBox;
-    @FXML
-    private CheckBox commentCheckBox;
+//    @FXML
+//    private CheckBox offsetLimitCheckBox;
+//    @FXML
+//    private CheckBox commentCheckBox;
     @FXML
 	private CheckBox overrideXML;
-    @FXML
-    private CheckBox needToStringHashcodeEquals;
+//    @FXML
+//    private CheckBox needToStringHashcodeEquals;
     @FXML
     private CheckBox useLombokPlugin;
-    @FXML
-    private CheckBox forUpdateCheckBox;
+//    @FXML
+//    private CheckBox forUpdateCheckBox;
     @FXML
     private CheckBox annotationDAOCheckBox;
-    @FXML
-    private CheckBox useTableNameAliasCheckbox;
-    @FXML
-    private CheckBox annotationCheckBox;
-    @FXML
-    private CheckBox useActualColumnNamesCheckbox;
-    @FXML
-    private CheckBox useExample;
-    @FXML
-    private CheckBox useDAOExtendStyle;
-    @FXML
-    private CheckBox useSchemaPrefix;
+//    @FXML
+//    private CheckBox useTableNameAliasCheckbox;
+//    @FXML
+//    private CheckBox annotationCheckBox;
+//    @FXML
+//    private CheckBox useActualColumnNamesCheckbox;
+//    @FXML
+//    private CheckBox useExample;
+//    @FXML
+//    private CheckBox useDAOExtendStyle;
+//    @FXML
+//    private CheckBox useSchemaPrefix;
     @FXML
     private CheckBox jsr310Support;
     @FXML
@@ -134,17 +168,17 @@ public class MainUIController extends BaseFXController {
             controller.setMainUIController(this);
             controller.showDialogStage();
         });
-		useExample.setOnMouseClicked(event -> {
-			if (useExample.isSelected()) {
-				offsetLimitCheckBox.setDisable(false);
-			} else {
-				offsetLimitCheckBox.setDisable(true);
-			}
-		});
+//		useExample.setOnMouseClicked(event -> {
+//			if (useExample.isSelected()) {
+//				offsetLimitCheckBox.setDisable(false);
+//			} else {
+//				offsetLimitCheckBox.setDisable(true);
+//			}
+//		});
 		// selectedProperty().addListener 解决应用配置的时候未触发Clicked事件
-        useLombokPlugin.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            needToStringHashcodeEquals.setDisable(newValue);
-        });
+//        useLombokPlugin.selectedProperty().addListener((observable, oldValue, newValue) -> {
+//            needToStringHashcodeEquals.setDisable(newValue);
+//        });
 
         leftDBTree.setShowRoot(false);
         leftDBTree.setRoot(new TreeItem<>());
@@ -214,8 +248,8 @@ public class MainUIController extends BaseFXController {
                         selectedDatabaseConfig = (DatabaseConfig) treeItem.getParent().getGraphic().getUserData();
                         this.tableName = tableName;
                         tableNameField.setText(tableName);
-                        domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
-                        mapperName.setText(domainObjectNameField.getText().concat("DAO"));
+//                        domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
+//                        mapperName.setText(domainObjectNameField.getText().concat("DAO"));
                     }
                 }
             });
@@ -230,13 +264,13 @@ public class MainUIController extends BaseFXController {
 	private void setTooltip() {
 		encodingChoice.setTooltip(new Tooltip("生成文件的编码，必选"));
 		generateKeysField.setTooltip(new Tooltip("insert时可以返回主键ID"));
-		offsetLimitCheckBox.setTooltip(new Tooltip("是否要生成分页查询代码"));
-		commentCheckBox.setTooltip(new Tooltip("使用数据库的列注释作为实体类字段名的Java注释 "));
-		useActualColumnNamesCheckbox.setTooltip(new Tooltip("是否使用数据库实际的列名作为实体类域的名称"));
-		useTableNameAliasCheckbox.setTooltip(new Tooltip("在Mapper XML文件中表名使用别名，并且列全部使用as查询"));
+//		offsetLimitCheckBox.setTooltip(new Tooltip("是否要生成分页查询代码"));
+//		commentCheckBox.setTooltip(new Tooltip("使用数据库的列注释作为实体类字段名的Java注释 "));
+//		useActualColumnNamesCheckbox.setTooltip(new Tooltip("是否使用数据库实际的列名作为实体类域的名称"));
+//		useTableNameAliasCheckbox.setTooltip(new Tooltip("在Mapper XML文件中表名使用别名，并且列全部使用as查询"));
 		overrideXML.setTooltip(new Tooltip("重新生成时把原XML文件覆盖，否则是追加"));
-        useDAOExtendStyle.setTooltip(new Tooltip("将通用接口方法放在公共接口中，DAO接口留空"));
-        forUpdateCheckBox.setTooltip(new Tooltip("在Select语句中增加for update后缀"));
+//        useDAOExtendStyle.setTooltip(new Tooltip("将通用接口方法放在公共接口中，DAO接口留空"));
+//        forUpdateCheckBox.setTooltip(new Tooltip("在Select语句中增加for update后缀"));
         useLombokPlugin.setTooltip(new Tooltip("实体类使用Lombok @Data简化代码"));
 	}
 
@@ -307,6 +341,7 @@ public class MainUIController extends BaseFXController {
             }
 
             bridge.generate();
+            alert.done();
 
             if (pictureProcessStateController != null) {
                 Task task = new Task<Void>() {
@@ -340,12 +375,17 @@ public class MainUIController extends BaseFXController {
 		if (StringUtils.isEmpty(projectFolder))  {
 			return "项目目录不能为空";
 		}
-		if (StringUtils.isEmpty(domainObjectNameField.getText()))  {
-			return "类名不能为空";
-		}
-		if (StringUtils.isAnyEmpty(modelTargetPackage.getText(), mapperTargetPackage.getText(), daoTargetPackage.getText())) {
-			return "包名不能为空";
-		}
+//		if (StringUtils.isEmpty(domainObjectNameField.getText()))  {
+//			return "类名不能为空";
+//		}
+//		if (StringUtils.isAnyEmpty(modelTargetPackage.getText(), mapperTargetPackage.getText(), daoTargetPackage.getText())) {
+//			return "包名不能为空";
+//		}
+        if (StringUtils
+            .isAnyEmpty(poPackage.getText(), boPackage.getText(), daoPackage.getText(), managerImplPackage.getText(),
+                managerPackage.getText(),transPackage.getText())) {
+            return "包名不能为空";
+        }
 
 		return null;
 	}
@@ -378,60 +418,77 @@ public class MainUIController extends BaseFXController {
     public GeneratorConfig getGeneratorConfigFromUI() {
         GeneratorConfig generatorConfig = new GeneratorConfig();
         generatorConfig.setProjectFolder(projectFolderField.getText());
-        generatorConfig.setModelPackage(modelTargetPackage.getText());
         generatorConfig.setGenerateKeys(generateKeysField.getText());
-        generatorConfig.setModelPackageTargetFolder(modelTargetProject.getText());
-        generatorConfig.setDaoPackage(daoTargetPackage.getText());
-        generatorConfig.setDaoTargetFolder(daoTargetProject.getText());
-        generatorConfig.setMapperName(mapperName.getText());
-        generatorConfig.setMappingXMLPackage(mapperTargetPackage.getText());
-        generatorConfig.setMappingXMLTargetFolder(mappingTargetProject.getText());
+
+        generatorConfig.setBoPackage(boPackage.getText());
+        generatorConfig.setBoTargetProject(boTargetProject.getText());
+
+        generatorConfig.setPoPackage(poPackage.getText());
+        generatorConfig.setPoTargetProject(poTargetProject.getText());
+
+        generatorConfig.setDaoPackage(daoPackage.getText());
+        generatorConfig.setDaoTargetProject(daoTargetProject.getText());
+
+        generatorConfig.setMapperPackage(mapperPackage.getText());
+        generatorConfig.setMapperTargetProject(mapperTargetProject.getText());
+
+        generatorConfig.setManagerPackage(managerPackage.getText());
+        generatorConfig.setManagerTargetProject(managerTargetProject.getText());
+
+        generatorConfig.setManagerImplPackage(managerImplPackage.getText());
+        generatorConfig.setManagerImplTargetProject(managerImplTargetProject.getText());
+
+        generatorConfig.setTransPackage(transPackage.getText());
+        generatorConfig.setTransTargetProject(transTargetProject.getText());
+
         generatorConfig.setTableName(tableNameField.getText());
-        generatorConfig.setDomainObjectName(domainObjectNameField.getText());
-        generatorConfig.setOffsetLimit(offsetLimitCheckBox.isSelected());
-        generatorConfig.setComment(commentCheckBox.isSelected());
+
         generatorConfig.setOverrideXML(overrideXML.isSelected());
-        generatorConfig.setNeedToStringHashcodeEquals(needToStringHashcodeEquals.isSelected());
         generatorConfig.setUseLombokPlugin(useLombokPlugin.isSelected());
-        generatorConfig.setUseTableNameAlias(useTableNameAliasCheckbox.isSelected());
-        generatorConfig.setNeedForUpdate(forUpdateCheckBox.isSelected());
-        generatorConfig.setAnnotationDAO(annotationDAOCheckBox.isSelected());
-        generatorConfig.setAnnotation(annotationCheckBox.isSelected());
-        generatorConfig.setUseActualColumnNames(useActualColumnNamesCheckbox.isSelected());
+//        generatorConfig.setUseTableNameAlias(useTableNameAliasCheckbox.isSelected());
+//        generatorConfig.setUseActualColumnNames(useActualColumnNamesCheckbox.isSelected());
         generatorConfig.setEncoding(encodingChoice.getValue());
-        generatorConfig.setUseExample(useExample.isSelected());
-        generatorConfig.setUseDAOExtendStyle(useDAOExtendStyle.isSelected());
-        generatorConfig.setUseSchemaPrefix(useSchemaPrefix.isSelected());
+//        generatorConfig.setUseExample(useExample.isSelected());
+//        generatorConfig.setUseDAOExtendStyle(useDAOExtendStyle.isSelected());
+//        generatorConfig.setUseSchemaPrefix(useSchemaPrefix.isSelected());
         generatorConfig.setJsr310Support(jsr310Support.isSelected());
         return generatorConfig;
     }
 
     public void setGeneratorConfigIntoUI(GeneratorConfig generatorConfig) {
         projectFolderField.setText(generatorConfig.getProjectFolder());
-        modelTargetPackage.setText(generatorConfig.getModelPackage());
         generateKeysField.setText(generatorConfig.getGenerateKeys());
-        modelTargetProject.setText(generatorConfig.getModelPackageTargetFolder());
-        daoTargetPackage.setText(generatorConfig.getDaoPackage());
-		daoTargetProject.setText(generatorConfig.getDaoTargetFolder());
-		mapperName.setText(generatorConfig.getMapperName());
-		mapperTargetPackage.setText(generatorConfig.getMappingXMLPackage());
-        mappingTargetProject.setText(generatorConfig.getMappingXMLTargetFolder());
-        tableNameField.setText(generatorConfig.getTableName());
-        domainObjectNameField.setText(generatorConfig.getDomainObjectName());
-        offsetLimitCheckBox.setSelected(generatorConfig.isOffsetLimit());
-        commentCheckBox.setSelected(generatorConfig.isComment());
+
+        poPackage.setText(generatorConfig.getPoPackage());
+        poTargetProject.setText(generatorConfig.getPoTargetProject());
+
+        boPackage.setText(generatorConfig.getBoPackage());
+        boTargetProject.setText(generatorConfig.getBoTargetProject());
+
+        daoPackage.setText(generatorConfig.getDaoPackage());
+        daoTargetProject.setText(generatorConfig.getDaoTargetProject());
+
+        mapperPackage.setText(generatorConfig.getMapperPackage());
+        mapperTargetProject.setText(generatorConfig.getMapperTargetProject());
+
+        managerPackage.setText(generatorConfig.getManagerPackage());
+        managerTargetProject.setText(generatorConfig.getManagerTargetProject());
+
+        managerImplPackage.setText(generatorConfig.getManagerImplPackage());
+        managerImplTargetProject.setText(generatorConfig.getManagerImplTargetProject());
+
+        transPackage.setText(generatorConfig.getTransPackage());
+        transTargetProject.setText(generatorConfig.getTransTargetProject());
+
+
+//        daoTargetPackage.setText(generatorConfig.getDaoPackage());
         overrideXML.setSelected(generatorConfig.isOverrideXML());
-        needToStringHashcodeEquals.setSelected(generatorConfig.isNeedToStringHashcodeEquals());
         useLombokPlugin.setSelected(generatorConfig.isUseLombokPlugin());
-        useTableNameAliasCheckbox.setSelected(generatorConfig.getUseTableNameAlias());
-        forUpdateCheckBox.setSelected(generatorConfig.isNeedForUpdate());
-        annotationDAOCheckBox.setSelected(generatorConfig.isAnnotationDAO());
-        annotationCheckBox.setSelected(generatorConfig.isAnnotation());
-        useActualColumnNamesCheckbox.setSelected(generatorConfig.isUseActualColumnNames());
+//        useActualColumnNamesCheckbox.setSelected(generatorConfig.isUseActualColumnNames());
         encodingChoice.setValue(generatorConfig.getEncoding());
-        useExample.setSelected(generatorConfig.isUseExample());
-        useDAOExtendStyle.setSelected(generatorConfig.isUseDAOExtendStyle());
-        useSchemaPrefix.setSelected(generatorConfig.isUseSchemaPrefix());
+//        useExample.setSelected(generatorConfig.isUseExample());
+//        useDAOExtendStyle.setSelected(generatorConfig.isUseDAOExtendStyle());
+//        useSchemaPrefix.setSelected(generatorConfig.isUseSchemaPrefix());
         jsr310Support.setSelected(generatorConfig.isJsr310Support());
 
     }
@@ -474,9 +531,14 @@ public class MainUIController extends BaseFXController {
     private boolean checkDirs(GeneratorConfig config) {
 		List<String> dirs = new ArrayList<>();
 		dirs.add(config.getProjectFolder());
-		dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getModelPackageTargetFolder())));
-		dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getDaoTargetFolder())));
-		dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getMappingXMLTargetFolder())));
+		dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getBoTargetProject())));
+		dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getPoTargetProject())));
+		dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getDaoTargetProject())));
+        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getMapperTargetProject())));
+        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getManagerTargetProject())));
+        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getManagerImplTargetProject())));
+        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getTransTargetProject())));
+
 		boolean haveNotExistFolder = false;
 		for (String dir : dirs) {
 			File file = new File(dir);

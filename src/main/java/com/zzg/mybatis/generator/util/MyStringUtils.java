@@ -1,5 +1,11 @@
 package com.zzg.mybatis.generator.util;
 
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.generator.config.ConstVal;
+
+import java.io.File;
+
 /**
  * Created by Owen on 6/18/16.
  */
@@ -39,4 +45,21 @@ public class MyStringUtils {
         return null;
     }
 
+    /**
+     * 连接路径字符串
+     *
+     * @param parentDir   路径常量字符串
+     * @param packageName 包名
+     * @return 连接后的路径
+     */
+    public static String joinPath(String parentDir, String packageName) {
+        if (StringUtils.isBlank(parentDir)) {
+            parentDir = System.getProperty(ConstVal.JAVA_TMPDIR);
+        }
+        if (!StringUtils.endsWith(parentDir, File.separator)) {
+            parentDir += File.separator;
+        }
+        packageName = packageName.replaceAll("\\.", StringPool.BACK_SLASH + File.separator);
+        return parentDir + packageName;
+    }
 }

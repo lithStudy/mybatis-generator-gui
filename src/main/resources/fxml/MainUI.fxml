@@ -262,7 +262,7 @@
                                                 <HBox spacing="18.0">
                                                     <children>
                                                         <CheckBox fx:id="useLombokPlugin" mnemonicParsing="false" selected="true" text="LombokPlugin"/>
-                                                        <CheckBox fx:id="overrideXML" mnemonicParsing="false" selected="true" text="覆盖原XML"/>
+                                                        <CheckBox fx:id="overrideFile" mnemonicParsing="false" selected="true" text="覆盖原文件"/>
                                                         <CheckBox fx:id="jsr310Support" mnemonicParsing="false" prefHeight="16.0" prefWidth="252.0" text="JSR310: Date and Time API"/>
                                                     </children>
                                                 </HBox>

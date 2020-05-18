@@ -15,9 +15,6 @@ public class GeneratorConfig {
 	/**
 	 * 本配置的名称
 	 */
-	/**
-	 * 本配置的名称
-	 */
 	private String name;
 
 	private String connectorJarPath;
@@ -47,23 +44,13 @@ public class GeneratorConfig {
 
 	private String tableName;
 
-	private boolean overrideXML;
+	private boolean overrideFile;
 
 	private boolean useLombokPlugin;
-
-	private boolean useActualColumnNames;
-
-	private boolean useExample;
 
 	private String generateKeys;
 
 	private String encoding;
-
-	private boolean useTableNameAlias;
-
-	private boolean useDAOExtendStyle;
-
-	private boolean useSchemaPrefix;
 
 	private boolean jsr310Support;
 

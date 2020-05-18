@@ -83,9 +83,7 @@ public class MybatisGeneratorBridge {
 //			tableConfig.setGeneratedKey(new GeneratedKey(generatorConfig.getGenerateKeys(), dbType2, true, null));
 //		}
 
-//        ClassLoader classLoader = getCustomClassloader(configuration.getClassPathEntries());
-//        ObjectFactory.addExternalClassLoader(classLoader);
-
+        //加载驱动jar
         loadJar(configuration.getClassPathEntries().get(0));
         /**
          * 使用mybatis-plus-generator生成代码

@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.zzg.mybatis.generator.model.DatabaseConfig;
@@ -47,6 +48,9 @@ public class MybatisPlusGenerator {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         mpg.setDataSource(dsc);
+        //策略配置
+        StrategyConfig strategy = new StrategyConfig();
+        mpg.setStrategy(strategy);
 
         /**
          * 全局配置
@@ -54,6 +58,24 @@ public class MybatisPlusGenerator {
         gc.setAuthor("lith");
         gc.setOpen(false);
         gc.setFileOverride(true);
+        if (!generatorConfig.isJsr310Support()) {
+            gc.setDateType(DateType.ONLY_DATE);
+        }
+
+        /**
+         * 策略配置
+         */
+        strategy.setNaming(NamingStrategy.underline_to_camel);
+        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+        strategy.setEntityLombokModel(generatorConfig.isUseLombokPlugin());
+        //指定表名
+        strategy.setInclude(generatorConfig.getTableName());
+
+        //实体名
+        String entityName = NamingStrategy
+            .capitalFirst(MyStringUtils.processName(generatorConfig.getTableName(), strategy.getNaming(), null));
+
+
 
         /**
          * 数据源配置
@@ -74,7 +96,7 @@ public class MybatisPlusGenerator {
             .templatePath("/mytemplates/mapper.xml.ftl")
             .path(generatorConfig.getMapperTargetProject())
             .packagePath(generatorConfig.getMapperPackage())
-            .fileNameSuffix("")
+            .fileNameSuffix("mapper")
             .fileSuffix(StringPool.DOT_XML)
             .build();
 
@@ -140,10 +162,10 @@ public class MybatisPlusGenerator {
             public void initMap() {
                 // to do nothing
                 HashMap<String, Object> injectMap = new HashMap<>();
-                injectMap.put("boConf", boConf);
-                injectMap.put("poConf", poConf);
-                injectMap.put("daoConf", daoConf);
                 injectMap.put("mapperConf", mapperConf);
+                injectMap.put("poConf", poConf);
+                injectMap.put("boConf", boConf);
+                injectMap.put("daoConf", daoConf);
                 injectMap.put("managerConf", managerConf);
                 injectMap.put("managerImplConf", managerImplConf);
                 injectMap.put("converterConf", converterConf);
@@ -154,16 +176,20 @@ public class MybatisPlusGenerator {
 
         //自定义对象
         for (PlusGeneratorInjectionConf plusGeneratorInjectionConf : confList) {
+            // 自定义输入文件名称
+            StringBuilder fileSb = new StringBuilder(generatorConfig.getProjectFolder())
+                .append(MyStringUtils.joinPath(plusGeneratorInjectionConf.getPath(), plusGeneratorInjectionConf.getPackagePath()))
+                .append(File.separator)
+                .append(entityName).append(plusGeneratorInjectionConf.getFileNameSuffix())
+                .append(plusGeneratorInjectionConf.getFileSuffix());
+            //文件已经存在时覆盖逻辑
+            File file = new File(fileSb.toString());
+            if (!generatorConfig.isOverrideFile() && file.exists()) {
+                continue;
+            }
             focList.add(new FileOutConfig(plusGeneratorInjectionConf.getTemplatePath()) {
                 @Override
                 public String outputFile(TableInfo tableInfo) {
-                    // 自定义输入文件名称
-                    StringBuilder fileSb = new StringBuilder(generatorConfig.getProjectFolder())
-                        .append(MyStringUtils.joinPath(plusGeneratorInjectionConf.getPath(), plusGeneratorInjectionConf.getPackagePath()))
-                        .append(File.separator)
-                        .append(tableInfo.getEntityName()).append(plusGeneratorInjectionConf.getFileNameSuffix())
-                        .append(plusGeneratorInjectionConf.getFileSuffix());
-
                     return fileSb.toString();
                 }
             });
@@ -184,15 +210,7 @@ public class MybatisPlusGenerator {
         tc.setController(null);
         mpg.setTemplate(tc);
 
-        /**
-         * 策略配置
-         */
-        StrategyConfig strategy = new StrategyConfig();
-        strategy.setNaming(NamingStrategy.underline_to_camel);
-        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        //指定表名
-        strategy.setInclude(generatorConfig.getTableName());
-        mpg.setStrategy(strategy);
+
 
         // 选择 freemarker 引擎需要指定如下加，注意 pom 依赖必须有！
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());

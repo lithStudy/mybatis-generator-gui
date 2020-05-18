@@ -3,6 +3,7 @@ package com.zzg.mybatis.generator.util;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.config.ConstVal;
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 
 import java.io.File;
 
@@ -61,5 +62,37 @@ public class MyStringUtils {
         }
         packageName = packageName.replaceAll("\\.", StringPool.BACK_SLASH + File.separator);
         return parentDir + packageName;
+    }
+
+    /**
+     * 处理表/字段名称
+     *
+     * @param name     ignore
+     * @param strategy ignore
+     * @param prefix   ignore
+     * @return 根据策略返回处理后的名称
+     */
+    public static String processName(String name, NamingStrategy strategy, String[] prefix) {
+        boolean removePrefix = false;
+        if (prefix != null && prefix.length != 0) {
+            removePrefix = true;
+        }
+        String propertyName;
+        if (removePrefix) {
+            if (strategy == NamingStrategy.underline_to_camel) {
+                // 删除前缀、下划线转驼峰
+                propertyName = NamingStrategy.removePrefixAndCamel(name, prefix);
+            } else {
+                // 删除前缀
+                propertyName = NamingStrategy.removePrefix(name, prefix);
+            }
+        } else if (strategy == NamingStrategy.underline_to_camel) {
+            // 下划线转驼峰
+            propertyName = NamingStrategy.underlineToCamel(name);
+        } else {
+            // 不处理
+            propertyName = name;
+        }
+        return propertyName;
     }
 }

@@ -2,6 +2,7 @@ package ${cfg.managerConf.packagePath};
 
 import ${cfg.boConf.packagePath}.${entity}${cfg.boConf.fileNameSuffix};
 
+
 import com.guahao.convention.data.domain.PageQuery;
 import java.util.List;
 

@@ -12,7 +12,7 @@
         <id column="id" jdbcType="BIGINT" property="id" />
         <#list table.fields as field>
         <#if !field.keyFlag && !ignoreRetArr?seq_contains(field.name)><#--生成普通字段 -->
-        <result column="${field.name}" jdbcType="${field.name}" property="${field.propertyName}" />
+        <result column="${field.name}" property="${field.propertyName}" />
         </#if>
         </#list>
     </resultMap>

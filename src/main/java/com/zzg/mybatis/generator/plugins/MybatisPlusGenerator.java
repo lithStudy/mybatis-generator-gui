@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.FileOutConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
+import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
@@ -51,13 +52,20 @@ public class MybatisPlusGenerator {
         //策略配置
         StrategyConfig strategy = new StrategyConfig();
         mpg.setStrategy(strategy);
+        //包配置
+        PackageConfig packageInfo = new PackageConfig();
+        mpg.setPackageInfo(packageInfo);
 
+        //实体名
+        String entityName = generatorConfig.getEntityName();
         /**
          * 全局配置
          */
         gc.setAuthor("lith");
         gc.setOpen(false);
         gc.setFileOverride(true);
+        gc.setEntityName(entityName);
+        //是否使用localDate
         if (!generatorConfig.isJsr310Support()) {
             gc.setDateType(DateType.ONLY_DATE);
         }
@@ -70,12 +78,6 @@ public class MybatisPlusGenerator {
         strategy.setEntityLombokModel(generatorConfig.isUseLombokPlugin());
         //指定表名
         strategy.setInclude(generatorConfig.getTableName());
-
-        //实体名
-        String entityName = NamingStrategy
-            .capitalFirst(MyStringUtils.processName(generatorConfig.getTableName(), strategy.getNaming(), null));
-
-
 
         /**
          * 数据源配置
@@ -96,7 +98,7 @@ public class MybatisPlusGenerator {
             .templatePath("/mytemplates/mapper.xml.ftl")
             .path(generatorConfig.getMapperTargetProject())
             .packagePath(generatorConfig.getMapperPackage())
-            .fileNameSuffix("mapper")
+            .fileNameSuffix("Mapper")
             .fileSuffix(StringPool.DOT_XML)
             .build();
 
@@ -148,6 +150,46 @@ public class MybatisPlusGenerator {
             .fileSuffix(StringPool.DOT_JAVA)
             .build();
 
+
+
+        //RPC
+        PlusGeneratorInjectionConf dtoConf = PlusGeneratorInjectionConf.builder()
+            .templatePath("/mytemplates/rpc/entityDTO.java.ftl")
+            .path(generatorConfig.getTransTargetProject())
+            .packagePath("dto")
+//            .packagePath(generatorConfig.getTransPackage())
+            .fileNameSuffix("DTO")
+            .fileSuffix(StringPool.DOT_JAVA)
+            .build();
+
+        PlusGeneratorInjectionConf rpcConf = PlusGeneratorInjectionConf.builder()
+            .templatePath("/mytemplates/rpc/rpc.java.ftl")
+            .path(generatorConfig.getTransTargetProject())
+            .packagePath("rpc")
+            //            .packagePath(generatorConfig.getTransPackage())
+            .fileNameSuffix("Service")
+            .fileSuffix(StringPool.DOT_JAVA)
+            .build();
+
+        PlusGeneratorInjectionConf rpcImplConf = PlusGeneratorInjectionConf.builder()
+            .templatePath("/mytemplates/rpc/rpcImpl.java.ftl")
+            .path(generatorConfig.getTransTargetProject())
+            .packagePath("rpc.impl")
+            //            .packagePath(generatorConfig.getTransPackage())
+            .fileNameSuffix("ServiceImpl")
+            .fileSuffix(StringPool.DOT_JAVA)
+            .build();
+
+        PlusGeneratorInjectionConf rpcConverterConf = PlusGeneratorInjectionConf.builder()
+            .templatePath("/mytemplates/rpc/rpcConverter.java.ftl")
+            .path(generatorConfig.getTransTargetProject())
+            .packagePath("converter")
+            //            .packagePath(generatorConfig.getTransPackage())
+            .fileNameSuffix("RpcConverter")
+            .fileSuffix(StringPool.DOT_JAVA)
+            .build();
+
+
         List<PlusGeneratorInjectionConf> confList = new ArrayList<>();
         confList.add(boConf);
         confList.add(poConf);
@@ -156,6 +198,11 @@ public class MybatisPlusGenerator {
         confList.add(managerConf);
         confList.add(managerImplConf);
         confList.add(converterConf);
+
+        confList.add(rpcConf);
+        confList.add(rpcImplConf);
+        confList.add(dtoConf);
+        confList.add(rpcConverterConf);
 
         InjectionConfig cfg = new InjectionConfig() {
             @Override
@@ -169,6 +216,12 @@ public class MybatisPlusGenerator {
                 injectMap.put("managerConf", managerConf);
                 injectMap.put("managerImplConf", managerImplConf);
                 injectMap.put("converterConf", converterConf);
+
+                injectMap.put("dtoConf", dtoConf);
+                injectMap.put("rpcConf", rpcConf);
+                injectMap.put("rpcImplConf", rpcImplConf);
+                injectMap.put("rpcConverterConf", rpcConverterConf);
+
                 this.setMap(injectMap);
             }
         };
@@ -182,7 +235,7 @@ public class MybatisPlusGenerator {
                 .append(File.separator)
                 .append(entityName).append(plusGeneratorInjectionConf.getFileNameSuffix())
                 .append(plusGeneratorInjectionConf.getFileSuffix());
-            //文件已经存在时覆盖逻辑
+            //文件已经存在时是否覆盖
             File file = new File(fileSb.toString());
             if (!generatorConfig.isOverrideFile() && file.exists()) {
                 continue;
@@ -210,7 +263,10 @@ public class MybatisPlusGenerator {
         tc.setController(null);
         mpg.setTemplate(tc);
 
-
+        /**
+         * 包配置
+         */
+        packageInfo.setModuleName(entityName.toLowerCase());
 
         // 选择 freemarker 引擎需要指定如下加，注意 pom 依赖必须有！
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());

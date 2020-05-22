@@ -7,6 +7,7 @@ import com.zzg.mybatis.generator.model.GeneratorConfig;
 import com.zzg.mybatis.generator.model.UITableColumnVO;
 import com.zzg.mybatis.generator.util.ConfigHelper;
 import com.zzg.mybatis.generator.util.DbUtil;
+import com.zzg.mybatis.generator.util.MyStringUtils;
 import com.zzg.mybatis.generator.view.AlertUtil;
 import com.zzg.mybatis.generator.view.UIProgressCallback;
 import javafx.collections.FXCollections;
@@ -82,6 +83,12 @@ public class MainUIController extends BaseFXController {
     @FXML
     private TextField transTargetProject;
 
+    @FXML
+    private TextField entityNameField;
+
+    @FXML
+    private Label entityNameLable;
+
 
 
     // tool bar buttons
@@ -99,8 +106,8 @@ public class MainUIController extends BaseFXController {
     private TextField tableNameField;
     @FXML
     private TextField domainObjectNameField;
-    @FXML
-    private TextField generateKeysField;	//主键ID
+//    @FXML
+//    private TextField generateKeysField;	//主键ID
     @FXML
     private TextField mapperName;
     @FXML
@@ -227,6 +234,7 @@ public class MainUIController extends BaseFXController {
                         selectedDatabaseConfig = (DatabaseConfig) treeItem.getParent().getGraphic().getUserData();
                         this.tableName = tableName;
                         tableNameField.setText(tableName);
+                        entityNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
 //                        domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
 //                        mapperName.setText(domainObjectNameField.getText().concat("DAO"));
                     }
@@ -242,7 +250,8 @@ public class MainUIController extends BaseFXController {
 
 	private void setTooltip() {
 		encodingChoice.setTooltip(new Tooltip("生成文件的编码，必选"));
-		generateKeysField.setTooltip(new Tooltip("insert时可以返回主键ID"));
+        entityNameLable.setTooltip(new Tooltip("实体名决定了所有类和文件的名字前缀，例如 Person 将生成PersonPO PersonBO PersonDAO  等"));
+//		generateKeysField.setTooltip(new Tooltip("insert时可以返回主键ID"));
 //		offsetLimitCheckBox.setTooltip(new Tooltip("是否要生成分页查询代码"));
 //		commentCheckBox.setTooltip(new Tooltip("使用数据库的列注释作为实体类字段名的Java注释 "));
 //		useActualColumnNamesCheckbox.setTooltip(new Tooltip("是否使用数据库实际的列名作为实体类域的名称"));
@@ -251,6 +260,7 @@ public class MainUIController extends BaseFXController {
 //        useDAOExtendStyle.setTooltip(new Tooltip("将通用接口方法放在公共接口中，DAO接口留空"));
 //        forUpdateCheckBox.setTooltip(new Tooltip("在Select语句中增加for update后缀"));
         useLombokPlugin.setTooltip(new Tooltip("实体类使用Lombok @Data简化代码"));
+        jsr310Support.setTooltip(new Tooltip("勾选时Date使用LocalDate替换"));
 	}
 
     void loadLeftDBTree() {
@@ -391,7 +401,7 @@ public class MainUIController extends BaseFXController {
     public GeneratorConfig getGeneratorConfigFromUI() {
         GeneratorConfig generatorConfig = new GeneratorConfig();
         generatorConfig.setProjectFolder(projectFolderField.getText());
-        generatorConfig.setGenerateKeys(generateKeysField.getText());
+//        generatorConfig.setGenerateKeys(generateKeysField.getText());
 
         generatorConfig.setBoPackage(boPackage.getText());
         generatorConfig.setBoTargetProject(boTargetProject.getText());
@@ -415,6 +425,7 @@ public class MainUIController extends BaseFXController {
         generatorConfig.setTransTargetProject(transTargetProject.getText());
 
         generatorConfig.setTableName(tableNameField.getText());
+        generatorConfig.setEntityName(entityNameField.getText());
 
         generatorConfig.setOverrideFile(overrideFile.isSelected());
         generatorConfig.setUseLombokPlugin(useLombokPlugin.isSelected());
@@ -425,7 +436,7 @@ public class MainUIController extends BaseFXController {
 
     public void setGeneratorConfigIntoUI(GeneratorConfig generatorConfig) {
         projectFolderField.setText(generatorConfig.getProjectFolder());
-        generateKeysField.setText(generatorConfig.getGenerateKeys());
+//        generateKeysField.setText(generatorConfig.getGenerateKeys());
 
         poPackage.setText(generatorConfig.getPoPackage());
         poTargetProject.setText(generatorConfig.getPoTargetProject());

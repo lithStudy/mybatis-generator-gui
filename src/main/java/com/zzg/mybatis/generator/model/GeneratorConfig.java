@@ -44,6 +44,8 @@ public class GeneratorConfig {
 
 	private String tableName;
 
+    private String entityName;
+
 	private boolean overrideFile;
 
 	private boolean useLombokPlugin;

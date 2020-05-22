@@ -58,9 +58,9 @@
     <center>
         <SplitPane dividerPositions="0.15">
             <items>
-                <AnchorPane maxWidth="500.0" minWidth="100.0" prefHeight="618.0" prefWidth="200.0">
+                <AnchorPane maxWidth="500.0" minWidth="200.0" prefHeight="618.0" prefWidth="350.0">
                     <children>
-                        <TreeView fx:id="leftDBTree" layoutX="-14.0" maxWidth="0.0" prefHeight="545.0" prefWidth="126.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                        <TreeView fx:id="leftDBTree" layoutX="-14.0" maxWidth="0.0" prefHeight="545.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
                     </children>
                 </AnchorPane>
                 <AnchorPane minWidth="400.0">
@@ -92,28 +92,34 @@
                                         <!--<RowConstraints maxHeight="99.0" minHeight="30.0" prefHeight="43.0"/>-->
                                     </rowConstraints>
                                     <children>
-                                        <Label text="表名"/>
-                                        <TextField fx:id="tableNameField" disable="true" editable="false" prefHeight="27.0" prefWidth="156.0" promptText="person" GridPane.columnIndex="1">
-                                            <GridPane.margin>
-                                                <Insets left="5.0" right="5.0"/>
-                                            </GridPane.margin>
-                                        </TextField>
-                                        <Label text="主键(选填)" GridPane.rowIndex="1"/>
-                                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                                            <children>
-                                                <TextField fx:id="generateKeysField" prefHeight="25.0" prefWidth="216.0" promptText="primary key, such as id" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                                    <GridPane.margin>
-                                                        <Insets left="5.0" right="5.0"/>
-                                                    </GridPane.margin>
-                                                    <HBox.margin>
-                                                        <Insets right="5.0"/>
-                                                    </HBox.margin>
-                                                </TextField>
-                                            </children>
+                                        <Label text="表名" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="tableNameField" disable="true" editable="false" prefHeight="27.0" prefWidth="152.0" promptText="person" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                             <GridPane.margin>
                                                 <Insets left="5.0"/>
                                             </GridPane.margin>
-                                        </HBox>
+                                        </TextField>
+                                        <Label text="实体名" fx:id="entityNameLable" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="entityNameField" prefHeight="27.0" prefWidth="228.0" promptText="" text="" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                        <!--<Label text="主键(选填)" GridPane.rowIndex="1"/>-->
+                                        <!--<HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.valignment="CENTER">-->
+                                            <!--<children>-->
+                                                <!--<TextField fx:id="generateKeysField" prefHeight="25.0" prefWidth="216.0" promptText="primary key, such as id" GridPane.columnIndex="1" GridPane.rowIndex="3">-->
+                                                    <!--<GridPane.margin>-->
+                                                        <!--<Insets left="5.0" right="5.0"/>-->
+                                                    <!--</GridPane.margin>-->
+                                                    <!--<HBox.margin>-->
+                                                        <!--<Insets right="5.0"/>-->
+                                                    <!--</HBox.margin>-->
+                                                <!--</TextField>-->
+                                            <!--</children>-->
+                                            <!--<GridPane.margin>-->
+                                                <!--<Insets left="5.0"/>-->
+                                            <!--</GridPane.margin>-->
+                                        <!--</HBox>-->
                                         <Label text="项目所在目录" GridPane.rowIndex="2"/>
                                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="2">
                                             <children>
@@ -244,8 +250,107 @@
                                         </TextField>
 
 
+                                    </children>
+                                    <padding>
+                                        <Insets bottom="10.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </GridPane>
 
-                                        <VBox prefHeight="53.0" prefWidth="536.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="10">
+
+
+
+
+                                <GridPane fx:id="rpcPane" visible="false" alignment="TOP_RIGHT" layoutX="5.0" layoutY="29.0" prefHeight="505.0" prefWidth="766.0" vgap="5.0" AnchorPane.leftAnchor="-5.0" AnchorPane.rightAnchor="10.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="157.0" minWidth="132.0" prefWidth="138.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="222.0"/>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="688.0" minWidth="69.0" prefWidth="76.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="108.0"/>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="129.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="95.0"/>
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="dto包名" />
+                                        <TextField fx:id="dtoPackage" prefHeight="27.0" prefWidth="152.0" promptText="transform" GridPane.columnIndex="1" >
+                                            <HBox.margin>
+                                                <Insets right="5.0"/>
+                                            </HBox.margin>
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                        <Label text="存放路径" GridPane.columnIndex="2"/>
+                                        <TextField fx:id="dtoTargetProject" prefHeight="27.0" prefWidth="228.0" promptText="/src/main/java" text="/src/main/java" GridPane.columnIndex="3" GridPane.columnSpan="2">
+                                            <GridPane.margin>
+                                                <Insets left="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+
+
+                                        <Label text="rpc包名" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="rpcPackage" prefHeight="27.0" prefWidth="152.0" promptText="transform" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                            <HBox.margin>
+                                                <Insets right="5.0"/>
+                                            </HBox.margin>
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                        <Label text="rpc路径" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="rpcTargetProject" prefHeight="27.0" prefWidth="228.0" promptText="/src/main/java" text="/src/main/java" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                            <GridPane.margin>
+                                                <Insets left="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+
+
+                                        <Label text="rpcImpl包名" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="rpcImplPackage" prefHeight="27.0" prefWidth="152.0" promptText="transform" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                            <HBox.margin>
+                                                <Insets right="5.0"/>
+                                            </HBox.margin>
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                        <Label text="存放路径" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="rpcImplTargetProject" prefHeight="27.0" prefWidth="228.0" promptText="/src/main/java" text="/src/main/java" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                                            <GridPane.margin>
+                                                <Insets left="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+
+
+
+                                        <Label text="rpc转换类包名" GridPane.rowIndex="4"/>
+                                        <TextField fx:id="rpcConverterPackage" prefHeight="27.0" prefWidth="152.0" promptText="transform" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                            <HBox.margin>
+                                                <Insets right="5.0"/>
+                                            </HBox.margin>
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                        <Label text="存放路径" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+                                        <TextField fx:id="rpcConverterTargetProject" prefHeight="27.0" prefWidth="228.0" promptText="/src/main/java" text="/src/main/java" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                            <GridPane.margin>
+                                                <Insets left="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                    </children>
+                                </GridPane>
+
+                                <GridPane alignment="TOP_RIGHT" layoutX="5.0" layoutY="29.0" prefHeight="505.0" prefWidth="766.0" vgap="5.0" AnchorPane.leftAnchor="-5.0" AnchorPane.rightAnchor="10.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="157.0" minWidth="132.0" prefWidth="138.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="222.0"/>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="688.0" minWidth="69.0" prefWidth="76.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="108.0"/>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="129.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0" minWidth="10.0" prefWidth="95.0"/>
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox prefHeight="53.0" prefWidth="536.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="11">
                                             <children>
                                                 <HBox alignment="CENTER_LEFT">
                                                     <children>
@@ -296,6 +401,7 @@
                                         </HBox>
                                     </children>
                                 </GridPane>
+
                             </children>
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

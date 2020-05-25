@@ -2,27 +2,26 @@ package com.zzg.mybatis.generator.controller;
 
 import com.jcraft.jsch.Session;
 import com.zzg.mybatis.generator.bridge.MybatisGeneratorBridge;
+import com.zzg.mybatis.generator.enums.ConfNameEnum;
 import com.zzg.mybatis.generator.model.DatabaseConfig;
 import com.zzg.mybatis.generator.model.GeneratorConfig;
+import com.zzg.mybatis.generator.model.PlusGeneratorInjectionConf;
 import com.zzg.mybatis.generator.model.UITableColumnVO;
 import com.zzg.mybatis.generator.util.ConfigHelper;
 import com.zzg.mybatis.generator.util.DbUtil;
 import com.zzg.mybatis.generator.util.MyStringUtils;
 import com.zzg.mybatis.generator.view.AlertUtil;
 import com.zzg.mybatis.generator.view.UIProgressCallback;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldTreeCell;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.DirectoryChooser;
-import javafx.util.Callback;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.net.URL;
+import java.sql.SQLRecoverableException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,21 +31,34 @@ import org.mybatis.generator.config.IgnoredColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.io.File;
-import java.net.URL;
-import java.sql.SQLRecoverableException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.TextFieldTreeCell;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.stage.DirectoryChooser;
+import javafx.util.Callback;
 
 public class MainUIController extends BaseFXController {
 
     private static final Logger _LOG = LoggerFactory.getLogger(MainUIController.class);
     private static final String FOLDER_NO_EXIST = "部分目录不存在，是否创建";
-
-
 
     @FXML
     private TextField poPackage;
@@ -90,30 +102,54 @@ public class MainUIController extends BaseFXController {
     private Label entityNameLable;
 
 
+    @FXML
+    private CheckBox rpcGenerator;
+
+    @FXML
+    private GridPane rpcPane;
+
+    @FXML
+    private TextField dtoPackage;
+    @FXML
+    private TextField dtoTargetProject;
+
+    @FXML
+    private TextField rpcPackage;
+    @FXML
+    private TextField rpcTargetProject;
+
+    @FXML
+    private TextField rpcImplPackage;
+    @FXML
+    private TextField rpcImplTargetProject;
+
+    @FXML
+    private TextField rpcConverterPackage;
+    @FXML
+    private TextField rpcConverterTargetProject;
+
+
+
+
+
 
     // tool bar buttons
     @FXML
     private Label connectionLabel;
     @FXML
     private Label configsLabel;
-//    @FXML
-//    private TextField modelTargetPackage;
-//    @FXML
-//    private TextField mapperTargetPackage;
-//    @FXML
-//    private TextField daoTargetPackage;
     @FXML
     private TextField tableNameField;
     @FXML
     private TextField domainObjectNameField;
-//    @FXML
-//    private TextField generateKeysField;	//主键ID
+    //    @FXML
+    //    private TextField generateKeysField;	//主键ID
     @FXML
     private TextField mapperName;
     @FXML
     private TextField projectFolderField;
     @FXML
-	private CheckBox overrideFile;
+    private CheckBox overrideFile;
     @FXML
     private CheckBox useLombokPlugin;
     @FXML
@@ -154,17 +190,22 @@ public class MainUIController extends BaseFXController {
             controller.setMainUIController(this);
             controller.showDialogStage();
         });
-//		useExample.setOnMouseClicked(event -> {
-//			if (useExample.isSelected()) {
-//				offsetLimitCheckBox.setDisable(false);
-//			} else {
-//				offsetLimitCheckBox.setDisable(true);
-//			}
-//		});
-		// selectedProperty().addListener 解决应用配置的时候未触发Clicked事件
-//        useLombokPlugin.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//            needToStringHashcodeEquals.setDisable(newValue);
-//        });
+        //勾选事件
+        rpcGenerator.setOnMouseClicked(event -> {
+            if (rpcGenerator.isSelected()) {
+                rpcPane.setVisible(true);
+            } else {
+                rpcPane.setVisible(false);
+            }
+        });
+        // selectedProperty().addListener 解决应用配置的时候未触发Clicked事件
+        rpcGenerator.selectedProperty().addListener((observable, oldValue, newValue)->{
+            if (newValue) {
+                rpcPane.setVisible(true);
+            } else {
+                rpcPane.setVisible(false);
+            }
+        });
 
         leftDBTree.setShowRoot(false);
         leftDBTree.setRoot(new TreeItem<>());
@@ -179,14 +220,14 @@ public class MainUIController extends BaseFXController {
                     final ContextMenu contextMenu = new ContextMenu();
                     MenuItem item1 = new MenuItem("关闭连接");
                     item1.setOnAction(event1 -> treeItem.getChildren().clear());
-	                MenuItem item2 = new MenuItem("编辑连接");
-	                item2.setOnAction(event1 -> {
-		                DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
+                    MenuItem item2 = new MenuItem("编辑连接");
+                    item2.setOnAction(event1 -> {
+                        DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
                         TabPaneController controller = (TabPaneController) loadFXMLPage("编辑数据库连接", FXMLPage.NEW_CONNECTION, false);
-		                controller.setMainUIController(this);
-		                controller.setConfig(selectedConfig);
-		                controller.showDialogStage();
-	                });
+                        controller.setMainUIController(this);
+                        controller.setConfig(selectedConfig);
+                        controller.showDialogStage();
+                    });
                     MenuItem item3 = new MenuItem("删除连接");
                     item3.setOnAction(event1 -> {
                         DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
@@ -235,33 +276,26 @@ public class MainUIController extends BaseFXController {
                         this.tableName = tableName;
                         tableNameField.setText(tableName);
                         entityNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
-//                        domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
-//                        mapperName.setText(domainObjectNameField.getText().concat("DAO"));
+                        //                        domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
+                        //                        mapperName.setText(domainObjectNameField.getText().concat("DAO"));
                     }
                 }
             });
             return cell;
         });
         loadLeftDBTree();
-		setTooltip();
-		//默认选中第一个，否则如果忘记选择，没有对应错误提示
+        setTooltip();
+        //默认选中第一个，否则如果忘记选择，没有对应错误提示
         encodingChoice.getSelectionModel().selectFirst();
-	}
+    }
 
-	private void setTooltip() {
-		encodingChoice.setTooltip(new Tooltip("生成文件的编码，必选"));
+    private void setTooltip() {
+        encodingChoice.setTooltip(new Tooltip("生成文件的编码，必选"));
         entityNameLable.setTooltip(new Tooltip("实体名决定了所有类和文件的名字前缀，例如 Person 将生成PersonPO PersonBO PersonDAO  等"));
-//		generateKeysField.setTooltip(new Tooltip("insert时可以返回主键ID"));
-//		offsetLimitCheckBox.setTooltip(new Tooltip("是否要生成分页查询代码"));
-//		commentCheckBox.setTooltip(new Tooltip("使用数据库的列注释作为实体类字段名的Java注释 "));
-//		useActualColumnNamesCheckbox.setTooltip(new Tooltip("是否使用数据库实际的列名作为实体类域的名称"));
-//		useTableNameAliasCheckbox.setTooltip(new Tooltip("在Mapper XML文件中表名使用别名，并且列全部使用as查询"));
         overrideFile.setTooltip(new Tooltip("重新生成时把原XML文件覆盖，否则是追加"));
-//        useDAOExtendStyle.setTooltip(new Tooltip("将通用接口方法放在公共接口中，DAO接口留空"));
-//        forUpdateCheckBox.setTooltip(new Tooltip("在Select语句中增加for update后缀"));
         useLombokPlugin.setTooltip(new Tooltip("实体类使用Lombok @Data简化代码"));
         jsr310Support.setTooltip(new Tooltip("勾选时Date使用LocalDate替换"));
-	}
+    }
 
     void loadLeftDBTree() {
         TreeItem rootTreeItem = leftDBTree.getRoot();
@@ -300,10 +334,10 @@ public class MainUIController extends BaseFXController {
             return;
         }
         String result = validateConfig();
-		if (result != null) {
-			AlertUtil.showErrorAlert(result);
-			return;
-		}
+        if (result != null) {
+            AlertUtil.showErrorAlert(result);
+            return;
+        }
         GeneratorConfig generatorConfig = getGeneratorConfigFromUI();
         if (!checkDirs(generatorConfig)) {
             return;
@@ -359,21 +393,27 @@ public class MainUIController extends BaseFXController {
         }
     }
 
-	private String validateConfig() {
-		String projectFolder = projectFolderField.getText();
-		if (StringUtils.isEmpty(projectFolder))  {
-			return "项目目录不能为空";
-		}
+    private String validateConfig() {
+        String projectFolder = projectFolderField.getText();
+        if (StringUtils.isEmpty(projectFolder))  {
+            return "项目目录不能为空";
+        }
         if (StringUtils
             .isAnyEmpty(poPackage.getText(), boPackage.getText(), daoPackage.getText(), managerImplPackage.getText(),
                 managerPackage.getText(),transPackage.getText())) {
             return "包名不能为空";
         }
+        if (rpcGenerator.isSelected()) {
+            if (StringUtils.isAnyEmpty(rpcPackage.getText(), rpcImplPackage.getText(), dtoPackage.getText(),
+                rpcConverterPackage.getText())) {
+                return "包名不能为空";
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@FXML
+    @FXML
     public void saveGeneratorConfig() {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("保存当前配置");
@@ -401,32 +441,65 @@ public class MainUIController extends BaseFXController {
     public GeneratorConfig getGeneratorConfigFromUI() {
         GeneratorConfig generatorConfig = new GeneratorConfig();
         generatorConfig.setProjectFolder(projectFolderField.getText());
-//        generatorConfig.setGenerateKeys(generateKeysField.getText());
 
-        generatorConfig.setBoPackage(boPackage.getText());
-        generatorConfig.setBoTargetProject(boTargetProject.getText());
 
-        generatorConfig.setPoPackage(poPackage.getText());
-        generatorConfig.setPoTargetProject(poTargetProject.getText());
+        List<PlusGeneratorInjectionConf> configList = new ArrayList<>();
+        generatorConfig.setGeneratorPackConfigList(configList);
 
-        generatorConfig.setDaoPackage(daoPackage.getText());
-        generatorConfig.setDaoTargetProject(daoTargetProject.getText());
+        PlusGeneratorInjectionConf boGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(boPackage.getText()).path(boTargetProject.getText()).confNameEnum(ConfNameEnum.BO).build();
+        configList.add(boGeneratorPackConfig);
 
-        generatorConfig.setMapperPackage(mapperPackage.getText());
-        generatorConfig.setMapperTargetProject(mapperTargetProject.getText());
+        PlusGeneratorInjectionConf poGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(poPackage.getText()).path(poTargetProject.getText()).confNameEnum(ConfNameEnum.PO).build();
+        configList.add(poGeneratorPackConfig);
 
-        generatorConfig.setManagerPackage(managerPackage.getText());
-        generatorConfig.setManagerTargetProject(managerTargetProject.getText());
+        PlusGeneratorInjectionConf daoGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(daoPackage.getText()).path(daoTargetProject.getText()).confNameEnum(ConfNameEnum.DAO).build();
+        configList.add(daoGeneratorPackConfig);
 
-        generatorConfig.setManagerImplPackage(managerImplPackage.getText());
-        generatorConfig.setManagerImplTargetProject(managerImplTargetProject.getText());
+        PlusGeneratorInjectionConf mapperGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(mapperPackage.getText()).path(mapperTargetProject.getText()).confNameEnum(ConfNameEnum.MAPPER).build();
+        configList.add(mapperGeneratorPackConfig);
 
-        generatorConfig.setTransPackage(transPackage.getText());
-        generatorConfig.setTransTargetProject(transTargetProject.getText());
+
+        PlusGeneratorInjectionConf managerGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(managerPackage.getText()).path(managerTargetProject.getText()).confNameEnum(ConfNameEnum.MANAGER).build();
+        configList.add(managerGeneratorPackConfig);
+
+
+        PlusGeneratorInjectionConf managerImplGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(managerImplPackage.getText()).path(managerImplTargetProject.getText()).confNameEnum(ConfNameEnum.MANAGER_IMPL).build();
+        configList.add(managerImplGeneratorPackConfig);
+
+
+        PlusGeneratorInjectionConf transGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(transPackage.getText()).path(transTargetProject.getText()).confNameEnum(ConfNameEnum.CONVERTER).build();
+        configList.add(transGeneratorPackConfig);
+
+        //rpc层生成
+        generatorConfig.setRpcGenerator(rpcGenerator.isSelected());
+
+        PlusGeneratorInjectionConf dtoGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(dtoPackage.getText()).path(dtoTargetProject.getText()).confNameEnum(ConfNameEnum.DTO).build();
+        configList.add(dtoGeneratorPackConfig);
+
+
+        PlusGeneratorInjectionConf rpcGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(rpcPackage.getText()).path(rpcTargetProject.getText()).confNameEnum(ConfNameEnum.RPC).build();
+        configList.add(rpcGeneratorPackConfig);
+
+        PlusGeneratorInjectionConf rpcImplGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(rpcImplPackage.getText()).path(rpcImplTargetProject.getText()).confNameEnum(ConfNameEnum.RPC_IMPL).build();
+        configList.add(rpcImplGeneratorPackConfig);
+
+
+        PlusGeneratorInjectionConf rpcConverterGeneratorPackConfig = PlusGeneratorInjectionConf.builder()
+            .packagePath(rpcConverterPackage.getText()).path(rpcConverterTargetProject.getText()).confNameEnum(ConfNameEnum.RPC_CONVERTER).build();
+        configList.add(rpcConverterGeneratorPackConfig);
 
         generatorConfig.setTableName(tableNameField.getText());
         generatorConfig.setEntityName(entityNameField.getText());
-
         generatorConfig.setOverrideFile(overrideFile.isSelected());
         generatorConfig.setUseLombokPlugin(useLombokPlugin.isSelected());
         generatorConfig.setEncoding(encodingChoice.getValue());
@@ -436,28 +509,45 @@ public class MainUIController extends BaseFXController {
 
     public void setGeneratorConfigIntoUI(GeneratorConfig generatorConfig) {
         projectFolderField.setText(generatorConfig.getProjectFolder());
-//        generateKeysField.setText(generatorConfig.getGenerateKeys());
+        //        generateKeysField.setText(generatorConfig.getGenerateKeys());
 
-        poPackage.setText(generatorConfig.getPoPackage());
-        poTargetProject.setText(generatorConfig.getPoTargetProject());
+        poPackage.setText(generatorConfig.getPackage(ConfNameEnum.PO).getPackagePath());
+        poTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.PO).getPath());
 
-        boPackage.setText(generatorConfig.getBoPackage());
-        boTargetProject.setText(generatorConfig.getBoTargetProject());
+        boPackage.setText(generatorConfig.getPackage(ConfNameEnum.BO).getPackagePath());
+        boTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.BO).getPath());
 
-        daoPackage.setText(generatorConfig.getDaoPackage());
-        daoTargetProject.setText(generatorConfig.getDaoTargetProject());
+        daoPackage.setText(generatorConfig.getPackage(ConfNameEnum.DAO).getPackagePath());
+        daoTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.DAO).getPath());
 
-        mapperPackage.setText(generatorConfig.getMapperPackage());
-        mapperTargetProject.setText(generatorConfig.getMapperTargetProject());
+        mapperPackage.setText(generatorConfig.getPackage(ConfNameEnum.MAPPER).getPackagePath());
+        mapperTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.MAPPER).getPath());
 
-        managerPackage.setText(generatorConfig.getManagerPackage());
-        managerTargetProject.setText(generatorConfig.getManagerTargetProject());
+        managerPackage.setText(generatorConfig.getPackage(ConfNameEnum.MANAGER).getPackagePath());
+        managerTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.MANAGER).getPath());
 
-        managerImplPackage.setText(generatorConfig.getManagerImplPackage());
-        managerImplTargetProject.setText(generatorConfig.getManagerImplTargetProject());
+        managerImplPackage.setText(generatorConfig.getPackage(ConfNameEnum.MANAGER_IMPL).getPackagePath());
+        managerImplTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.MANAGER_IMPL).getPath());
 
-        transPackage.setText(generatorConfig.getTransPackage());
-        transTargetProject.setText(generatorConfig.getTransTargetProject());
+        transPackage.setText(generatorConfig.getPackage(ConfNameEnum.CONVERTER).getPackagePath());
+        transTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.CONVERTER).getPath());
+
+        if (null != generatorConfig.getRpcGenerator()) {
+            rpcGenerator.setSelected(generatorConfig.getRpcGenerator());
+
+            dtoPackage.setText(generatorConfig.getPackage(ConfNameEnum.DTO).getPackagePath());
+            dtoTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.DTO).getPath());
+
+            rpcPackage.setText(generatorConfig.getPackage(ConfNameEnum.RPC).getPackagePath());
+            rpcTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.RPC).getPath());
+
+            rpcImplPackage.setText(generatorConfig.getPackage(ConfNameEnum.RPC_IMPL).getPackagePath());
+            rpcImplTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.RPC_IMPL).getPath());
+
+            rpcConverterPackage.setText(generatorConfig.getPackage(ConfNameEnum.RPC_CONVERTER).getPackagePath());
+            rpcConverterTargetProject.setText(generatorConfig.getPackage(ConfNameEnum.RPC_CONVERTER).getPath());
+        }
+
 
         overrideFile.setSelected(generatorConfig.isOverrideFile());
         useLombokPlugin.setSelected(generatorConfig.isUseLombokPlugin());
@@ -502,42 +592,42 @@ public class MainUIController extends BaseFXController {
      * @return
      */
     private boolean checkDirs(GeneratorConfig config) {
-		List<String> dirs = new ArrayList<>();
-		dirs.add(config.getProjectFolder());
-		dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getBoTargetProject())));
-		dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getPoTargetProject())));
-		dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getDaoTargetProject())));
-        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getMapperTargetProject())));
-        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getManagerTargetProject())));
-        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getManagerImplTargetProject())));
-        dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(config.getTransTargetProject())));
+        List<String> dirs = new ArrayList<>();
+        dirs.add(config.getProjectFolder());
 
-		boolean haveNotExistFolder = false;
-		for (String dir : dirs) {
-			File file = new File(dir);
-			if (!file.exists()) {
-				haveNotExistFolder = true;
-			}
-		}
-		if (haveNotExistFolder) {
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setContentText(FOLDER_NO_EXIST);
-			Optional<ButtonType> optional = alert.showAndWait();
-			if (optional.isPresent()) {
-				if (ButtonType.OK == optional.get()) {
-					try {
-						for (String dir : dirs) {
-							FileUtils.forceMkdir(new File(dir));
-						}
-						return true;
-					} catch (Exception e) {
-						AlertUtil.showErrorAlert("创建目录失败，请检查目录是否是文件而非目录");
-					}
-				} else {
-					return false;
-				}
-			}
-		}
+        for (PlusGeneratorInjectionConf conf : config.getGeneratorPackConfigList()) {
+            if (StringUtils.isEmpty(conf.getPath())) {
+                continue;
+            }
+            dirs.add(FilenameUtils.normalize(config.getProjectFolder().concat("/").concat(conf.getPath())));
+        }
+
+        boolean haveNotExistFolder = false;
+        for (String dir : dirs) {
+            File file = new File(dir);
+            if (!file.exists()) {
+                haveNotExistFolder = true;
+            }
+        }
+        if (haveNotExistFolder) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setContentText(FOLDER_NO_EXIST);
+            Optional<ButtonType> optional = alert.showAndWait();
+            if (optional.isPresent()) {
+                if (ButtonType.OK == optional.get()) {
+                    try {
+                        for (String dir : dirs) {
+                            FileUtils.forceMkdir(new File(dir));
+                        }
+                        return true;
+                    } catch (Exception e) {
+                        AlertUtil.showErrorAlert("创建目录失败，请检查目录是否是文件而非目录");
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 

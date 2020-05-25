@@ -7,7 +7,6 @@
  */
 package com.zzg.mybatis.generator.plugins;
 
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
@@ -94,134 +93,29 @@ public class MybatisPlusGenerator {
         /**
          * 自定义配置
          */
-        PlusGeneratorInjectionConf mapperConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/mapper.xml.ftl")
-            .path(generatorConfig.getMapperTargetProject())
-            .packagePath(generatorConfig.getMapperPackage())
-            .fileNameSuffix("Mapper")
-            .fileSuffix(StringPool.DOT_XML)
-            .build();
+        List<PlusGeneratorInjectionConf> confList = generatorConfig.getGeneratorPackConfigList();
+//        for (GeneratorPackConfig config : configList) {
+//            //跳过rpc层的代码生成
+//            if (generatorConfig.getRpcGenerator() && ConfNameEnum.isRpc(config.getConfNameEnum().getName())) {
+//                continue;
+//            }
+//            confList.add(PlusGeneratorInjectionConf.builder().templatePath(config.getConfNameEnum().getTemplatePath())
+//                .fileNameSuffix(config.getConfNameEnum().getFileNameSuffix())
+//                .confName(config.getConfNameEnum().getName()).fileSuffix(config.getConfNameEnum().getFileSuffix())
+//                .path(config.getTargetProject()).packagePath(config.getPackageName())
+//                .build());
+//        }
 
-        PlusGeneratorInjectionConf poConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/entityPO.java.ftl")
-            .path(generatorConfig.getPoTargetProject())
-            .packagePath(generatorConfig.getPoPackage())
-            .fileNameSuffix("PO")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-        PlusGeneratorInjectionConf boConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/entityBO.java.ftl")
-            .path(generatorConfig.getBoTargetProject())
-            .packagePath(generatorConfig.getBoPackage())
-            .fileNameSuffix("BO")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-        PlusGeneratorInjectionConf daoConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/mapper.java.ftl")
-            .path(generatorConfig.getDaoTargetProject())
-            .packagePath(generatorConfig.getDaoPackage())
-            .fileNameSuffix("DAO")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-        PlusGeneratorInjectionConf managerConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/manager.java.ftl")
-            .path(generatorConfig.getManagerTargetProject())
-            .packagePath(generatorConfig.getManagerPackage())
-            .fileNameSuffix("Manager")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-        PlusGeneratorInjectionConf managerImplConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/managerImpl.java.ftl")
-            .path(generatorConfig.getManagerImplTargetProject())
-            .packagePath(generatorConfig.getManagerImplPackage())
-            .fileNameSuffix("ManagerImpl")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-        PlusGeneratorInjectionConf converterConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/converter.java.ftl")
-            .path(generatorConfig.getTransTargetProject())
-            .packagePath(generatorConfig.getTransPackage())
-            .fileNameSuffix("Converter")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-
-
-        //RPC
-        PlusGeneratorInjectionConf dtoConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/rpc/entityDTO.java.ftl")
-            .path(generatorConfig.getTransTargetProject())
-            .packagePath("dto")
-//            .packagePath(generatorConfig.getTransPackage())
-            .fileNameSuffix("DTO")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-        PlusGeneratorInjectionConf rpcConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/rpc/rpc.java.ftl")
-            .path(generatorConfig.getTransTargetProject())
-            .packagePath("rpc")
-            //            .packagePath(generatorConfig.getTransPackage())
-            .fileNameSuffix("Service")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-        PlusGeneratorInjectionConf rpcImplConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/rpc/rpcImpl.java.ftl")
-            .path(generatorConfig.getTransTargetProject())
-            .packagePath("rpc.impl")
-            //            .packagePath(generatorConfig.getTransPackage())
-            .fileNameSuffix("ServiceImpl")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-        PlusGeneratorInjectionConf rpcConverterConf = PlusGeneratorInjectionConf.builder()
-            .templatePath("/mytemplates/rpc/rpcConverter.java.ftl")
-            .path(generatorConfig.getTransTargetProject())
-            .packagePath("converter")
-            //            .packagePath(generatorConfig.getTransPackage())
-            .fileNameSuffix("RpcConverter")
-            .fileSuffix(StringPool.DOT_JAVA)
-            .build();
-
-
-        List<PlusGeneratorInjectionConf> confList = new ArrayList<>();
-        confList.add(boConf);
-        confList.add(poConf);
-        confList.add(daoConf);
-        confList.add(mapperConf);
-        confList.add(managerConf);
-        confList.add(managerImplConf);
-        confList.add(converterConf);
-
-        confList.add(rpcConf);
-        confList.add(rpcImplConf);
-        confList.add(dtoConf);
-        confList.add(rpcConverterConf);
-
+        /**
+         * 自定义生成器变量
+         */
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
-                // to do nothing
                 HashMap<String, Object> injectMap = new HashMap<>();
-                injectMap.put("mapperConf", mapperConf);
-                injectMap.put("poConf", poConf);
-                injectMap.put("boConf", boConf);
-                injectMap.put("daoConf", daoConf);
-                injectMap.put("managerConf", managerConf);
-                injectMap.put("managerImplConf", managerImplConf);
-                injectMap.put("converterConf", converterConf);
-
-                injectMap.put("dtoConf", dtoConf);
-                injectMap.put("rpcConf", rpcConf);
-                injectMap.put("rpcImplConf", rpcImplConf);
-                injectMap.put("rpcConverterConf", rpcConverterConf);
-
+                for (PlusGeneratorInjectionConf conf : confList) {
+                    injectMap.put(conf.getConfNameEnum().getName(), conf);
+                }
                 this.setMap(injectMap);
             }
         };
@@ -234,13 +128,13 @@ public class MybatisPlusGenerator {
                 .append(MyStringUtils.joinPath(plusGeneratorInjectionConf.getPath(), plusGeneratorInjectionConf.getPackagePath()))
                 .append(File.separator)
                 .append(entityName).append(plusGeneratorInjectionConf.getFileNameSuffix())
-                .append(plusGeneratorInjectionConf.getFileSuffix());
+                .append(plusGeneratorInjectionConf.getConfNameEnum().getFileSuffix());
             //文件已经存在时是否覆盖
             File file = new File(fileSb.toString());
             if (!generatorConfig.isOverrideFile() && file.exists()) {
                 continue;
             }
-            focList.add(new FileOutConfig(plusGeneratorInjectionConf.getTemplatePath()) {
+            focList.add(new FileOutConfig(plusGeneratorInjectionConf.getConfNameEnum().getTemplatePath()) {
                 @Override
                 public String outputFile(TableInfo tableInfo) {
                     return fileSb.toString();

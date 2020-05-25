@@ -7,11 +7,13 @@
  */
 package com.zzg.mybatis.generator.model;
 
+import com.zzg.mybatis.generator.enums.ConfNameEnum;
+
 import lombok.Builder;
 import lombok.Data;
 
 /**
- * TODO
+ * TODO PlusGeneratorInjectionConf
  *
  * @author lith
  * @version V1.0
@@ -21,21 +23,34 @@ import lombok.Data;
 @Data
 public class PlusGeneratorInjectionConf {
 
-    private String templatePath;
+    public PlusGeneratorInjectionConf() {
+    }
+
+    public PlusGeneratorInjectionConf(ConfNameEnum confNameEnum, String path, String packagePath) {
+        this.confNameEnum = confNameEnum;
+        this.path = path;
+        this.packagePath = packagePath;
+    }
+
+    private ConfNameEnum confNameEnum;
+
+//    private String templatePath;
 
     private String path;
 
     private String packagePath;
 
-    /**
-     * 文件名后缀
-     */
-    private String fileNameSuffix;
+//    /**
+//     * 文件名后缀
+//     */
+//    private String fileNameSuffix;
 
-    /**
-     * 文件后缀
-     */
-    private String fileSuffix;
+//    /**
+//     * 文件后缀
+//     */
+//    private String fileSuffix;
 
-
+    public String getFileNameSuffix() {
+        return this.confNameEnum.getFileNameSuffix();
+    }
 }

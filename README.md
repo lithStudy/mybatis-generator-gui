@@ -52,8 +52,3 @@ mybatis-generator-gui是基于[mybatis plus generator]开发一款界面工具, 
 * 如果不明白对应字段或选项是什么意思的时候，把光标放在对应字段或Label上停留一会然后如果有解释会出现解释；
 
 
-
-- - -
-Licensed under the Apache 2.0 License
-
-Copyright 2017 by Owen Zou

@@ -47,11 +47,11 @@ public class ${entity}${cfg.rpcImplConf.fileNameSuffix} implements ${entity}${cf
         Long totalNum = ${entity?uncap_first}${cfg.managerConf.fileNameSuffix}.count(queryBO);
         List<${entity}${cfg.dtoConf.fileNameSuffix}> pageDTOList = null;
         if (totalNum > 0) {
-          PageQuery pageQuery = new PageQuery(param.getPageNumber(), param.getPageSize());
+          PageQuery pageQuery = new PageQuery(dto.getPageNumber(), dto.getPageSize());
           List<${entity}${cfg.boConf.fileNameSuffix}> retList = ${entity?uncap_first}${cfg.managerConf.fileNameSuffix}.pageList(queryBO,pageQuery);
           pageDTOList = ${entity}${cfg.rpcConverterConf.fileNameSuffix}.transListBO2DTO(retList);
         }
-        return Pages.page(param, pageDTOList, totalNum);
+        return Pages.page(dto, pageDTOList, totalNum);
     }
 
 

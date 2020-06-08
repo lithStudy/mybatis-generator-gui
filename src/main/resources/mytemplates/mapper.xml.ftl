@@ -98,7 +98,7 @@
         values (
 <#list table.fields as field>
     <#if !field.keyFlag && !ignoreInsertArr?seq_contains(field.name)><#--生成普通字段 -->
-        ${field.propertyName},
+        ${r"#{"+field.propertyName+"}"},
     </#if>
 </#list>
         0,
@@ -107,9 +107,9 @@
         )
     </insert>
 
-    <!--忽略更新的字段-->
+    <#--忽略更新的字段-->
     <#assign ignoreUpdateArr=['is_deleted','id','gmt_created','gmt_modified','modifier','creator']/>
-    <#--更新数据-->
+    <!--更新数据-->
     <update id="updateByPrimaryKey" parameterType="${cfg.poConf.packagePath}.${entity}${cfg.poConf.fileNameSuffix}">
         update ${table.name}
         <set>
